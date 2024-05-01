@@ -1,12 +1,10 @@
 import asyncio
 import websockets
 import json
-from typing import cast
+import os
+import logging
 from dotenv import load_dotenv
 from gemini.client import GeminiClient
-import logging
-import os
-
 from processes.ai_tasks import (
     request_initial_response,
     request_diagram,

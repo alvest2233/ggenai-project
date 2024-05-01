@@ -1,148 +1,80 @@
-from gemini import Gemini
+import vertexai
+from vertexai.language_models import TextGenerationModel
 
-def request_initial_response(client: Gemini, prompt: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-initial-response",
-        max_tokens=1024,
+def request_initial_response(client: TextGenerationModel, prompt: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=1024,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_initial_response", message.content[0].text)
-    return message.content[0].text
+    print("request_initial_response", response.text)
+    return response.text
 
-def request_diagram(client: Gemini, prompt: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-diagram",
-        max_tokens=2048,
+def request_diagram(client: TextGenerationModel, prompt: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=2048,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_diagram", message.content[0].text)
-    return message.content[0].text
+    print("request_diagram", response.text)
+    return response.text
 
-def request_theme(client: Gemini, prompt: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-theme",
-        max_tokens=2048,
+def request_theme(client: TextGenerationModel, prompt: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=2048,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_theme", message.content[0].text)
-    return message.content[0].text
+    print("request_theme", response.text)
+    return response.text
 
-def request_generate_code(client: Gemini, prompt: str, theme: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-generate-code",
-        max_tokens=4096,
+def request_generate_code(client: TextGenerationModel, prompt: str, theme: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=4096,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_generate_code", message.content[0].text)
-    return message.content[0].text
+    print("request_generate_code", response.text)
+    return response.text
 
-def request_question_classification(client: Gemini, prompt: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-question-classification",
-        max_tokens=512,
+def request_question_classification(client: TextGenerationModel, prompt: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=512,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_question_classification", message.content[0].text)
-    return message.content[0].text
+    print("request_question_classification", response.text)
+    return response.text
 
-def request_general_inquiry(client: Gemini, prompt: str, original_prompt: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-general-inquiry",
-        max_tokens=1024,
+def request_general_inquiry(client: TextGenerationModel, prompt: str, original_prompt: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=1024,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_general_inquiry", message.content[0].text)
-    return message.content[0].text
+    print("request_general_inquiry", response.text)
+    return response.text
 
-def request_code_change(client: Gemini, prompt: str, html: str):
-    message = client.messages.create(
-        model="your-gemini-model-for-code-change",
-        max_tokens=4096,
+def request_code_change(client: TextGenerationModel, prompt: str, html: str):
+    response = client.predict(
+        prompt,
         temperature=0,
-        system="Your system prompt here...",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
+        max_output_tokens=4096,
+        top_p=1.0,
+        top_k=40
     )
-    print("request_code_change", message.content[0].text)
-    return message.content[0].text
+    print("request_code_change", response.text)
+    return response.text
+

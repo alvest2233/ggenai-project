@@ -1,13 +1,6 @@
 import os
 from dotenv import load_dotenv
 from gemini import Gemini
-
-from processes.ai_tasks import (
-    request_initial_response,
-    request_diagram,
-    request_theme,
-    request_generate_code
-)
 from processes.extractors import extract_pages, extract_html
 
 # Load environment variables from .env file
@@ -22,12 +15,12 @@ def main():
 
     # Get the initial response from the AI
     print("Getting Initial Response...")
-    initial_response = request_initial_response(gemini_client, initial_prompt)
+    initial_response = gemini_client.request_initial_response(initial_prompt)
     print(initial_response)
 
     # Get the wireframe chain from the AI
     print("Getting Wireframe Chain...")
-    screens = extract_pages(request_diagram(gemini_client, initial_prompt))
+    screens = extract_pages(gemini_client.request_diagram(initial_prompt))
 
     # Check that the wireframe chain has exactly 3 screens
     if len(screens) != 3:
@@ -35,12 +28,12 @@ def main():
 
     # Get the theme from the AI
     print("Getting Theme...")
-    theme = request_theme(gemini_client, initial_prompt)
+    theme = gemini_client.request_theme(initial_prompt)
 
     # Generate the HTML for each screen and save it to test_output folder
     for i, screen in enumerate(screens, start=1):
         print(f"Generating HTML for Screen {i}...")
-        screen_html = extract_html(request_generate_code(gemini_client, screen["prompt"], theme))
+        screen_html = extract_html(gemini_client.request_generate_code(screen["prompt"], theme))
         with open(f"test_output/screen{i}.html", "w") as f:
             f.write(screen_html)
 
