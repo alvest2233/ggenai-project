@@ -1,0 +1,12 @@
+FROM python:3.12-slim
+
+RUN set -eux; useradd profound -d /server;
+
+COPY . /server
+WORKDIR /server
+
+RUN pip3 install -r requirements.txt
+
+USER profound:profound
+
+CMD [ "python3", "main.py"]

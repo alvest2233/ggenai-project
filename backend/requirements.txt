@@ -1,0 +1,4 @@
+Gemini
+python-dotenv
+websockets
+openai
