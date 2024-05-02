@@ -1,7 +1,115 @@
+"use client"
 import Image from "next/image";
+import dynamic from "next/dynamic";
 //import ChatWindow from "./components/chatwindow.js";
+const SiteRender = dynamic(() => import("./components/chatsite.client.js"), { ssr: false });
+
+import { useState } from "react";
 
 export default function Home() {
+  const [sites, setSites] = useState([
+    {
+    sourceCode: `<!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body {
+          background-color: lightblue;
+        }
+        h1 {
+          color: white;
+        }
+      </style>
+      <script>
+        function myFunction() {
+          document.getElementById("demo").innerHTML = "Hello JavaScript!";
+        }
+      </script>
+    </head>
+    <body onload="myFunction()">
+      <h1 id="demo">Hello, World!</h1>
+    </body>
+    </html>`
+    }
+]);
+
+  const addSite = () => {
+    setSites([...sites, { sourceCode: `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sample Website</title>
+        <style>
+            /* CSS styles */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f0f0f0;
+            }
+    
+            header {
+                background-color: #333;
+                color: #fff;
+                padding: 10px 0;
+                text-align: center;
+            }
+    
+            .container {
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 0 20px;
+            }
+    
+            .btn {
+                background-color: #007bff;
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Welcome to Sample Website</h1>
+        </header>
+    
+        <div class="container">
+            <h2>This is a Heading</h2>
+            <p>This is a sample paragraph. Replace this with your own content.</p>
+            <button class="btn" id="changeColorBtn">Change Background Color</button>
+        </div>
+    
+        <script>
+            // JavaScript code
+            const changeColorBtn = document.getElementById('changeColorBtn');
+            const container = document.querySelector('.container');
+    
+            changeColorBtn.addEventListener('click', function() {
+                const randomColor = getRandomColor();
+                container.style.backgroundColor = randomColor;
+            });
+    
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        </script>
+    </body>
+    </html>` }]); // Add a new site with empty source code
+  };
+
+  const removeSite = () => {
+    setSites(sites.slice(0, -1)); // Remove the last site
+  };
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -39,6 +147,13 @@ export default function Home() {
           priority
         />
       </div>
+
+      {sites.map((site, index) => (
+        <SiteRender key={index} sourceCode={site.sourceCode} />
+      ))}
+
+      <button onClick={addSite}>Add Site</button>
+      <button onClick={removeSite}>Remove Site</button>
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
