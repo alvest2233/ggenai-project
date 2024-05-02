@@ -1,9 +1,9 @@
-import ChatMessage from "./chatmessage";
+"use client"
+import {ChatMessage} from "./chatmessage";
 import {useState} from 'react';
 
+
 export default function ChatWindow(){
-   const el = document.getElementById('messages')
-	el.scrollTop = el.scrollHeight
 
    const [messages, setMessages] = useState([]);
 
