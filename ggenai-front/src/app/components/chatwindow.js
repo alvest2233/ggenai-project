@@ -1,11 +1,13 @@
 "use client"
-import {ChatMessage} from "./chatmessage";
+// import {ChatMessage} from "./chatmessage";
 import {useState} from 'react';
+import dynamic from 'next/dynamic';
 
+const ChatMessage = dynamic(() => import("./chatmessage.js"), { ssr: false });
 
 export default function ChatWindow(){
 
-   const [messages, setMessages] = useState([]);
+   const [messages, setMessages] = useState([{message: "Hello World", didUserSend: false},{message: "Hello World", didUserSend: true}]);
 
    const addMessage = (message, didUserSend) => {
       setMessages([...messages, {message, didUserSend}]);
@@ -54,8 +56,8 @@ export default function ChatWindow(){
       </div>
    </div>
    <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-   {messages.map(({ text, didUserSend }, index) => (
-        <ChatMessage key={index} message={text} didUserSend={didUserSend} />
+   {messages.map((contents, index) => (
+        <ChatMessage key={index} message={contents.message} didUserSend={contents.didUserSend} />
       ))}
     </div>
    <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
