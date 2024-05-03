@@ -1,50 +1,48 @@
 import os
+import openai
 from dotenv import load_dotenv
-from gemini import Gemini
-from processes.extractors import extract_pages, extract_html
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize Gemini client
-gemini_client = Gemini(api_key=os.environ.get("GEMINI_API_KEY"))
+# Initialize OpenAI client with API key loaded from .env
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def main():
-    # Ask the user what they want to make
-    initial_prompt = input("What do you want to make today? ")
-
-    # Get the initial response from the AI
-    print("Getting Initial Response...")
-    initial_response = gemini_client.request_initial_response(initial_prompt)
-    print(initial_response)
-
-    # Get the wireframe chain from the AI
-    print("Getting Wireframe Chain...")
-    screens = extract_pages(gemini_client.request_diagram(initial_prompt))
-
-    # Check that the wireframe chain has exactly 3 screens
-    if len(screens) != 3:
-        raise Exception("The wireframe chain must have exactly 3 screens.")
-
-    # Get the theme from the AI
-    print("Getting Theme...")
-    theme = gemini_client.request_theme(initial_prompt)
-
-    # Generate the HTML for each screen and save it to test_output folder
-    for i, screen in enumerate(screens, start=1):
-        print(f"Generating HTML for Screen {i}...")
-        screen_html = extract_html(gemini_client.request_generate_code(screen["prompt"], theme))
+def generate_html_screens(initial_response):
+    """Generate and save HTML for three screens based on an initial response."""
+    for i in range(1, 4):  # Assuming we want three screens
+        screen_prompt = f"Generate HTML for screen {i} based on this description: {initial_response}"
+        screen_response = openai.Completion.create(
+            engine="davinci-codex",  # Using a code-capable engine
+            prompt=screen_prompt,
+            max_tokens=250
+        )
+        screen_html = screen_response.choices[0].text.strip()
+        # Save the generated HTML to a file
+        os.makedirs('test_output', exist_ok=True)  # Ensure the directory exists
         with open(f"test_output/screen{i}.html", "w") as f:
             f.write(screen_html)
+        print(f"HTML for Screen {i} generated and saved.")
 
-    print("DONE!")
+def main():
+    # Get a user input for what they want to make
+    initial_prompt = input("What do you want to make today? ")
 
-def follow_up():
-    followup_prompt = input("What do you want to make today? ")
+    # Fetch an initial response from OpenAI based on the user's input
+    print("Getting Initial Response...")
+    initial_response = openai.Completion.create(
+        engine="davinci",  # or another suitable engine
+        prompt=initial_prompt,
+        max_tokens=150
+    )
+    response_text = initial_response.choices[0].text.strip()
+    print("Response:", response_text)
 
-    # Get type of message from the AI
-    message_type = "GENERAL_INQUIRY"
+    # Generate HTML for the screens
+    print("Generating HTML for screens based on the AI's response...")
+    generate_html_screens(response_text)
+
+    print("DONE! Check the 'test_output' directory for the generated HTML files.")
 
 if __name__ == "__main__":
     main()
-    # follow_up()
