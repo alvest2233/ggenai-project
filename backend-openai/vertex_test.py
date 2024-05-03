@@ -1,34 +1,32 @@
-import base64
-import vertexai
-from vertexai.generative_models import GenerativeModel, Part, FinishReason
-import vertexai.preview.generative_models as generative_models
+import openai
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize OpenAI client with API key loaded from .env
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate():
-  vertexai.init(project="plexiform-timer-422004", location="us-central1")
-  model = GenerativeModel("gemini-1.5-pro-preview-0409")
-  responses = model.generate_content(
-      ["""generate html code for a startup"""],
-      generation_config=generation_config,
-      safety_settings=safety_settings,
-      stream=True,
-  )
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # Adjusted to the correct model name
+            messages=[
+                {"role": "user", "content": "generate html code for a startup"}
+            ],
+            max_tokens=4096,
+            temperature=1,
+            top_p=0.95
+        )
+        # Correctly access the 'message' key in the response
+        if 'choices' in response and len(response['choices']) > 0:
+            message = response['choices'][0]['message']['content']
+            print(message)
+        else:
+            print("No 'choices' found in the response or 'choices' is empty.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
 
-  for response in responses:
-    print(response.text, end="")
-
-
-generation_config = {
-    "max_output_tokens": 8192,
-    "temperature": 1,
-    "top_p": 0.95,
-}
-
-safety_settings = {
-    generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-}
-
-generate()
-
+if __name__ == "__main__":
+    generate()

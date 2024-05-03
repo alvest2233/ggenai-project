@@ -10,10 +10,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def request_initial_response(prompt: str):
     response = openai.Completion.create(
-        engine="davinci",  # Choose the appropriate engine based on your needs
+        engine="gpt-4",  # Switched to GPT-4 for enhanced capabilities
         prompt=prompt,
         max_tokens=1024,
-        temperature=0,
+        temperature=0,  # Zero temperature for deterministic output
         top_p=1.0,
         n=1
     )
@@ -22,7 +22,7 @@ def request_initial_response(prompt: str):
 
 def request_diagram(prompt: str):
     response = openai.Completion.create(
-        engine="davinci",
+        engine="gpt-4",  # Consistent use of GPT-4
         prompt=prompt,
         max_tokens=2048,
         temperature=0,
@@ -34,7 +34,7 @@ def request_diagram(prompt: str):
 
 def request_theme(prompt: str):
     response = openai.Completion.create(
-        engine="davinci",
+        engine="gpt-4",  # Using GPT-4 across all functions
         prompt=prompt,
         max_tokens=2048,
         temperature=0,
@@ -47,7 +47,7 @@ def request_theme(prompt: str):
 def request_generate_code(prompt: str, theme: str):
     full_prompt = f"{prompt}\nTheme: {theme}"
     response = openai.Completion.create(
-        engine="davinci-codex",  # Using a code-capable model
+        engine="gpt-4",  # Using GPT-4, which is also suitable for code generation
         prompt=full_prompt,
         max_tokens=4096,
         temperature=0,
@@ -59,7 +59,7 @@ def request_generate_code(prompt: str, theme: str):
 
 def request_question_classification(prompt: str):
     response = openai.Completion.create(
-        engine="davinci",
+        engine="gpt-4",  # Standardizing on GPT-4 for consistency
         prompt=prompt,
         max_tokens=512,
         temperature=0,
@@ -72,7 +72,7 @@ def request_question_classification(prompt: str):
 def request_general_inquiry(prompt: str, original_prompt: str):
     combined_prompt = f"Question: {prompt}\nContext: {original_prompt}"
     response = openai.Completion.create(
-        engine="davinci",
+        engine="gpt-4",  # GPT-4 to handle complex inquiries
         prompt=combined_prompt,
         max_tokens=1024,
         temperature=0,
@@ -85,7 +85,7 @@ def request_general_inquiry(prompt: str, original_prompt: str):
 def request_code_change(prompt: str, html: str):
     full_prompt = f"Modify this HTML: {html}\n{prompt}"
     response = openai.Completion.create(
-        engine="davinci-codex",  # Suitable for handling code changes
+        engine="gpt-4",  # GPT-4 for handling HTML and code changes
         prompt=full_prompt,
         max_tokens=4096,
         temperature=0,

@@ -13,9 +13,10 @@ def generate_html_screens(initial_response):
     for i in range(1, 4):  # Assuming we want three screens
         screen_prompt = f"Generate HTML for screen {i} based on this description: {initial_response}"
         screen_response = openai.Completion.create(
-            engine="davinci-codex",  # Using a code-capable engine
+            engine="gpt-4",  # Using GPT-4 for advanced capabilities
             prompt=screen_prompt,
-            max_tokens=250
+            max_tokens=250,
+            temperature=0.7  # Adjust temperature for creative but realistic responses
         )
         screen_html = screen_response.choices[0].text.strip()
         # Save the generated HTML to a file
@@ -31,9 +32,10 @@ def main():
     # Fetch an initial response from OpenAI based on the user's input
     print("Getting Initial Response...")
     initial_response = openai.Completion.create(
-        engine="davinci",  # or another suitable engine
+        engine="gpt-4",  # Using GPT-4 for initial response generation
         prompt=initial_prompt,
-        max_tokens=150
+        max_tokens=150,
+        temperature=0.7  # A moderate temperature for coherent and useful output
     )
     response_text = initial_response.choices[0].text.strip()
     print("Response:", response_text)

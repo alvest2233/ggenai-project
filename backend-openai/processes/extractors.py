@@ -1,51 +1,36 @@
+import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup
+
 def extract_pages(input_string):
     screens = []
-
-    # Find the start and end indices of the <screens> element
-    start_index = input_string.find("<screens>")
-    end_index = input_string.find("</screens>")
-
-    if start_index != -1 and end_index != -1:
-        # Extract the content inside the <screens> element
-        screens_content = input_string[start_index + len("<screens>"):end_index].strip()
-
-        # Split the content into individual <screen> elements
-        screen_elements = screens_content.split("</screen>")
-
-        for screen_element in screen_elements:
-            # Extract the <name> and <prompt> values for each screen
-            name_start = screen_element.find("<name>")
-            name_end = screen_element.find("</name>")
-            prompt_start = screen_element.find("<prompt>")
-            prompt_end = screen_element.find("</prompt>")
-
-            if name_start != -1 and name_end != -1 and prompt_start != -1 and prompt_end != -1:
-                name = screen_element[name_start + len("<name>"):name_end].strip()
-                prompt = screen_element[prompt_start + len("<prompt>"):prompt_end].strip()
-
-                screens.append({"name": name, "prompt": prompt})
-
+    try:
+        # Parsing the input string as XML
+        root = ET.fromstring(f"<data>{input_string}</data>")  # Wrap with a root tag to ensure proper parsing
+        for screen in root.findall('.//screen'):
+            name = screen.find('name').text.strip() if screen.find('name') is not None else "Unnamed"
+            prompt = screen.find('prompt').text.strip() if screen.find('prompt') is not None else "No prompt"
+            screens.append({"name": name, "prompt": prompt})
+    except ET.ParseError as e:
+        print(f"Error parsing XML: {e}")
     return screens
 
-
 def extract_ai_response(input_string):
-    # Find the start and end indices of the <AI-RESPONSE> element
-    start_index = input_string.find("<AI-RESPONSE>")
-    end_index = input_string.find("</AI-RESPONSE>")
-
-    if start_index != -1 and end_index != -1:
-        # Extract the content inside the <AI-RESPONSE> element
-        return input_string[start_index + len("<AI-RESPONSE>"):end_index].strip()
-
-    return "Okay!"
-
+    try:
+        root = ET.fromstring(f"<data>{input_string}</data>")  # Wrap with a root tag
+        ai_response = root.find('.//AI-RESPONSE')
+        return ai_response.text.strip() if ai_response is not None else "No AI response found"
+    except ET.ParseError as e:
+        print(f"Error parsing XML: {e}")
+        return "No AI response found"
 
 def extract_html(input_string):
-    # Find the start and end indices of the <html> element
-    start_index = input_string.find("<html")
-    end_index = input_string.find("</html>")
+    try:
+        soup = BeautifulSoup(input_string, 'html.parser')
+        html_content = soup.find('html')
+        if html_content:
+            return str(html_content)
+        else:
+            raise ValueError("HTML content not found")
+    except Exception as e:
+        raise Exception(f"Failed to extract HTML: {str(e)}")
 
-    if start_index != -1 and end_index != -1:
-        return input_string[start_index:end_index + len("</html>")].strip()
-
-    raise Exception("HTML Content Failed To Generate! This is possibly because Gemini refused to generate the HTML content.")
